@@ -75,8 +75,6 @@ pub enum ReadOperation {
     PTtl(PTtlParams),
     Ttl(TtlParams),
     HLen(HLenParams),
-    HRandField(HRandFieldParams),
-    HStrLen(HStrLenParams),
     BitCount(BitCountParams),
     BitPos(BitPosParams),
     SCard(SCardParams),
@@ -104,4 +102,6 @@ pub enum ReadOperation {
     HScan(HScanParams),
     SScan(SScanParams),
     ZScan(ZScanParams),
+    HRandField(HRandFieldParams),
+    HStrLen(HStrLenParams),
 }

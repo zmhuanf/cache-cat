@@ -66,7 +66,6 @@ pub enum BaseOperation {
     Set(SetReq),
     Incr(IncrReq),
     IncrBy(IncrByReq),
-    IncrByFloat(IncrByFloatReq),
     Append(AppendReq),
     SetBit(SetBitReq),
     BitField(BitFieldReq),
@@ -84,7 +83,6 @@ pub enum BaseOperation {
     //hash
     HSet(HSetReq),
     HIncr(HIncrReq),
-    HIncrByFloat(HIncrByFloatReq),
     HDel(HDelReq),
     HSetNx(HSetNxReq),
     HMSet(HMSetReq),
@@ -107,6 +105,8 @@ pub enum BaseOperation {
     //stream
     XAdd(XAddReq),
     XGroup(XGroupReq),
+    IncrByFloat(IncrByFloatReq),
+    HIncrByFloat(HIncrByFloatReq),
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

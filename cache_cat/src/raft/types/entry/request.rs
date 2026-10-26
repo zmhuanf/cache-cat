@@ -79,7 +79,6 @@ pub enum RedisOperation {
     RedisRename(RenameParams),
     RedisRenameNx(RenameNxParams),
     RedisBitOp(BitOpReq),
-    RedisBlPop(BlPopReq),
     RedisSInterStore(SInterStoreReq),
     RedisSUnionStore(SUnionStoreReq),
     RedisSDiffStore(SDiffStoreReq),
@@ -96,6 +95,7 @@ pub enum RedisOperation {
         params: EvalShaParams,
         proto: u8,
     },
+    RedisBlPop(BlPopReq),
 }
 
 impl fmt::Display for Request {
