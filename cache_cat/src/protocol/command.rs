@@ -34,6 +34,7 @@ use crate::protocol::hash::hkeys::HKeysCommand;
 use crate::protocol::hash::hlen::HLenCommand;
 use crate::protocol::hash::hmget::HMGetCommand;
 use crate::protocol::hash::hmset::HMSetCommand;
+use crate::protocol::hash::hrandfield::HRandFieldCommand;
 use crate::protocol::hash::hscan::HScanCommand;
 use crate::protocol::hash::hset::HSetCommand;
 use crate::protocol::hash::hsetnx::HSetNxCommand;
@@ -55,6 +56,7 @@ use crate::protocol::key::scan::ScanCommand;
 use crate::protocol::key::ttl::TtlCommand;
 use crate::protocol::key::type_::TypeCommand;
 use crate::protocol::key::unlink::UnlinkCommand;
+use crate::protocol::list::blpop::BlPopCommand;
 use crate::protocol::list::lindex::LIndexCommand;
 use crate::protocol::list::llen::LLenCommand;
 use crate::protocol::list::lpop::LPopCommand;
@@ -241,10 +243,9 @@ impl Client {
     /// Protocol failures get one error reply before the connection is closed.
     /// Transport failures keep their existing handling and do not generate RESP.
     async fn reply_to_decode_error(&mut self, error: &std::io::Error) {
-        if let Some(error) = error
-            .get_ref()
-            .and_then(|source| source.downcast_ref::<crate::protocol::common::resp::RespParseError>())
-        {
+        if let Some(error) = error.get_ref().and_then(|source| {
+            source.downcast_ref::<crate::protocol::common::resp::RespParseError>()
+        }) {
             let _ = self.framed.send(Value::error(format!("ERR {error}"))).await;
         }
     }
@@ -380,6 +381,7 @@ impl CommandFactory {
         factory.register("LRANGE", LRangeCommand);
         factory.register("LLEN", LLenCommand);
         factory.register("LPOP", LPopCommand);
+        factory.register("BLPOP", BlPopCommand);
         factory.register("RPOP", RPopCommand);
         factory.register("LINDEX", LIndexCommand);
         factory.register("LREM", LRemCommand);
@@ -399,6 +401,7 @@ impl CommandFactory {
         factory.register("HEXISTS", HExistsCommand);
         factory.register("HLEN", HLenCommand);
         factory.register("HSETNX", HSetNxCommand);
+        factory.register("HRANDFIELD", HRandFieldCommand);
         factory.register("HSTRLEN", HStrLenCommand);
         factory.register("HSCAN", HScanCommand);
         // Set commands
@@ -678,7 +681,10 @@ impl CommandFactory {
                 return Ok(());
             }
         };
-        client.last_cmd = parsed.name.clone();
+        // Reuse the existing command-name allocation on persistent
+        // connections; command names are short and this runs for every
+        // request.
+        client.last_cmd.clone_from(&parsed.name);
         if !client.authenticated
             && !matches!(parsed.name.as_str(), "AUTH" | "HELLO" | "QUIT" | "RESET")
         {

@@ -12,6 +12,7 @@ use crate::protocol::hash::hgetall::HGetAllParams;
 use crate::protocol::hash::hkeys::HKeysParams;
 use crate::protocol::hash::hlen::HLenParams;
 use crate::protocol::hash::hmget::HMGetParams;
+use crate::protocol::hash::hrandfield::HRandFieldParams;
 use crate::protocol::hash::hscan::HScanParams;
 use crate::protocol::hash::hstrlen::HStrLenParams;
 use crate::protocol::hash::hvals::HValsParams;
@@ -74,6 +75,7 @@ pub enum ReadOperation {
     PTtl(PTtlParams),
     Ttl(TtlParams),
     HLen(HLenParams),
+    HRandField(HRandFieldParams),
     HStrLen(HStrLenParams),
     BitCount(BitCountParams),
     BitPos(BitPosParams),

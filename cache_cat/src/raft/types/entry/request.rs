@@ -2,6 +2,7 @@ use crate::protocol::bitmap::bitop::BitOpReq;
 use crate::protocol::key::rename::RenameParams;
 use crate::protocol::key::renamenx::RenameNxParams;
 use crate::protocol::key::unlink::UnlinkParams;
+use crate::protocol::list::blpop::BlPopReq;
 use crate::protocol::lua::eval::EvalParams;
 use crate::protocol::lua::evalsha::EvalShaParams;
 use crate::protocol::set::sdiffstore::SDiffStoreReq;
@@ -78,6 +79,7 @@ pub enum RedisOperation {
     RedisRename(RenameParams),
     RedisRenameNx(RenameNxParams),
     RedisBitOp(BitOpReq),
+    RedisBlPop(BlPopReq),
     RedisSInterStore(SInterStoreReq),
     RedisSUnionStore(SUnionStoreReq),
     RedisSDiffStore(SDiffStoreReq),
@@ -123,6 +125,7 @@ impl fmt::Display for Request {
                 ReadOperation::PTtl(req) => write!(f, "Pttl: {}", req),
                 ReadOperation::Ttl(req) => write!(f, "Ttl: {}", req),
                 ReadOperation::HLen(req) => write!(f, "HLen: {}", req),
+                ReadOperation::HRandField(req) => write!(f, "HRandField: {}", req),
                 ReadOperation::HStrLen(req) => write!(f, "HStrLen: {}", req),
                 ReadOperation::BitCount(req) => write!(f, "BitCount: {}", req),
                 ReadOperation::BitPos(req) => write!(f, "BitPos: {}", req),
@@ -208,6 +211,7 @@ impl fmt::Display for Request {
                 RedisOperation::RedisDel(req) => write!(f, "RedisDel: {}", req),
                 RedisOperation::RedisRename(req) => write!(f, "RedisRename: {}", req),
                 RedisOperation::RedisBitOp(req) => write!(f, "RedisBitOp: {}", req),
+                RedisOperation::RedisBlPop(req) => write!(f, "RedisBlPop: {}", req),
                 RedisOperation::RedisSInterStore(req) => write!(f, "RedisSInterStore: {}", req),
                 RedisOperation::RedisSUnionStore(req) => write!(f, "RedisSUnionStore: {}", req),
                 RedisOperation::RedisSDiffStore(req) => write!(f, "RedisSDiffStore: {}", req),
